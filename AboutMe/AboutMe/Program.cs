@@ -4,20 +4,26 @@ namespace AboutMe
 {
     class Program
     {
+        //keeping these public as counters
         public static int correct = 0;
         public static int incorrect = 0;
         static void Main(string[] args)
         {
             Console.WriteLine("Here's a quick quiz about me!");
-            updateCounters(SibNum());
-            updateCounters(BirthMonth());
-            updateCounters(BirthState());
-            updateCounters(CurrentAge());
-            updateCounters(QuestionsCorrect());
-            Console.WriteLine("You got " + correct + " questions right and " + incorrect + " questions incorrect.");
+            UpdateCounters(SibNum());
+            UpdateCounters(BirthMonth());
+            UpdateCounters(BirthState());
+            UpdateCounters(CurrentAge());
+            UpdateCounters(WalkDistance());
+
+            //debug questions - check to make sure that correct/incorrect values are appropriately updating
+            //UpdateCounters(QuestionsCorrect());
+            //UpdateCounters(QuestionsIncorrect());
+            //Using the ternary operator (https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator) for practice 
+            Console.WriteLine("You got " + correct + " question" + (UsePlural(correct) ? "s" : "") + " right and " + incorrect + " question" + (UsePlural(incorrect) ? "s" : "") + " incorrect.");
             Console.ReadLine();
         }
-        static void updateCounters(bool questionResult)
+        static void UpdateCounters(bool questionResult)
         {
             if (questionResult)
             {
@@ -41,14 +47,23 @@ namespace AboutMe
         //    //return (parsedInput == correctVal);
         //}
 
+        //this is probably one of the most specific and least useful helper functions ever written
+        static bool UsePlural(int count)
+        {
+            if(count == 1 || count == -1)
+            {
+                return false;
+            }
+            return true;
+        }
+
         static bool SibNum()
         {
             int correctVal = 1;
             WriteQuestionNumber();
             Console.WriteLine("How many siblings do I have?");
             string userInput = Console.ReadLine();
-            int parsedInput = UserInt(userInput);
-            return (parsedInput == correctVal);
+            return (UserInt(userInput) == correctVal);
         }
 
         static bool BirthMonth()
@@ -71,13 +86,32 @@ namespace AboutMe
             return (NormalizeString(userInput) == NormalizeString(correctVal));
         }
 
+        static bool CurrentAge()
+        {
+            int correctVal = GetMyAgeInYears();
+            WriteQuestionNumber();
+            Console.WriteLine("How old am I (in years)?");
+            string userInput = Console.ReadLine();
+            int parsedInput = UserInt(userInput);
+            return (parsedInput == correctVal);
+        }
+
+        static bool WalkDistance()
+        {
+            double correctVal = 1.25;
+            WriteQuestionNumber();
+            Console.WriteLine("How far do I walk to get to CodeFellows each day, one way?");
+            string userInput = Console.ReadLine();
+            double parsedInput = UserDouble(userInput);
+            return (parsedInput == correctVal);
+        }
+
         static bool QuestionsCorrect()
         {
             WriteQuestionNumber();
             Console.WriteLine("How many questions have you answered correctly?");
             string userInput = Console.ReadLine();
-            int parsedInput = UserInt(userInput);
-            return (parsedInput == correct);
+            return (UserInt(userInput) == correct);
         }
 
         static bool QuestionsIncorrect()
@@ -89,38 +123,61 @@ namespace AboutMe
             return (parsedInput == incorrect);
         }
 
-        static bool CurrentAge()
-        {
-            int correctVal = GetMyAgeInYears();
-            WriteQuestionNumber();
-            Console.WriteLine("How old am I (in years)?");
-            string userInput = Console.ReadLine();
-            int parsedInput = UserInt(userInput);
-            return (parsedInput == correctVal);
-        }
-
         static void WriteQuestionNumber()
         {
-            Console.WriteLine("Question #" + (correct + incorrect + 1) + ": ");
+            try
+            {
+                Console.WriteLine("Question #" + (correct + incorrect + 1) + ": ");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Unexpected exception in WriteQuestionNumber:");
+                Console.WriteLine(e.Message);
+            }
+            
         }
 
         static int GetMyAgeInYears()
         {
-            if(DateTime.Today.Month > 3 || DateTime.Today.Month == 3 && DateTime.Today.Day >= 25)
+            //using the Today property of the DateTime object from here https://docs.microsoft.com/en-us/dotnet/api/system.datetime.today?view=netframework-4.7.2
+            try
             {
-                //if today's month is later than March, or if today's month is March and the date is the 25th or later, I've had my birthday this year
-                return DateTime.Today.Year - 1993;
+                if (DateTime.Today.Month > 3 || DateTime.Today.Month == 3 && DateTime.Today.Day >= 25)
+                {
+                    //if today's month is later than March, or if today's month is March and the date is the 25th or later, I've had my birthday this year
+                    return DateTime.Today.Year - 1993;
+                }
+                else
+                {
+                    //else I have not had this year's birthday
+                    return DateTime.Today.Year - 1993 - 1;
+                }
             }
-            else
+            catch(Exception e)
             {
-                //else I have not had this year's birthday
-                return DateTime.Today.Year - 1993 - 1;
+                Console.WriteLine("Hit an unexpected exception in GetMyAgeInYears:");
+                Console.WriteLine(e.Message);
             }
+            return 0;
         }
 
         static string NormalizeString(string userInput)
         {
-            return userInput.Trim().ToLower();
+            try
+            {
+                return userInput.Trim().ToLower();
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Format exception thrown for NormalizeString - make sure we're still taking in a string for normalization.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Hit an unexpected exception in NormalizeString:");
+                Console.WriteLine(e.Message);
+            }
+            //if all else fails, return the original input
+            return userInput;
         }
 
         static int UserInt(string userInput)
@@ -128,18 +185,37 @@ namespace AboutMe
             int parsedInt = 0;
             try
             {
-                parsedInt = Convert.ToInt32(userInput);
+                return Convert.ToInt32(userInput);
             }
             catch(FormatException)
             {
-                Console.WriteLine("Format exception thrown - are you sure that string was convertable to an integer?");
+                Console.WriteLine("Format exception thrown in UserInt - are you sure that string was convertable to an integer?");
             }
             catch(Exception e)
             {
-                Console.WriteLine("Hit an unexpected exception:");
+                Console.WriteLine("Hit an unexpected exception in UserInt:");
                 Console.WriteLine(e.Message);
             }
             return parsedInt;
+        }
+
+        static double UserDouble(string userInput)
+        {
+            double parsedDouble = 0.0;
+            try
+            {
+                return Convert.ToDouble(userInput);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Format exception thrown in UserInt - are you sure that string was convertable to an integer?");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Hit an unexpected exception in UserInt:");
+                Console.WriteLine(e.Message);
+            }
+            return parsedDouble;
         }
     }
 }
