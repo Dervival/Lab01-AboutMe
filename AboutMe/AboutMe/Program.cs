@@ -11,6 +11,8 @@ namespace AboutMe
             Console.WriteLine("Here's a quick quiz about me!");
             updateCounters(SibNum());
             updateCounters(BirthMonth());
+            updateCounters(BirthState());
+            updateCounters(QuestionsCorrect());
             Console.WriteLine("You got " + correct + " questions right and " + incorrect + " questions incorrect.");
             Console.ReadLine();
         }
@@ -56,6 +58,25 @@ namespace AboutMe
             string userInput = Console.ReadLine();
             //int parsedInput = UserInt(userInput);
             return (NormalizeString(userInput) == NormalizeString(correctVal));
+        }
+
+        static bool BirthState()
+        {
+            string correctVal = "Oregon";
+            WriteQuestionNumber();
+            Console.WriteLine("What US state was I born in?");
+            string userInput = Console.ReadLine();
+            //int parsedInput = UserInt(userInput);
+            return (NormalizeString(userInput) == NormalizeString(correctVal));
+        }
+
+        static bool QuestionsCorrect()
+        {
+            WriteQuestionNumber();
+            Console.WriteLine("How many questions have you answered correctly?");
+            string userInput = Console.ReadLine();
+            int parsedInput = UserInt(userInput);
+            return (parsedInput == correct);
         }
 
         static void WriteQuestionNumber()
