@@ -94,7 +94,7 @@ namespace AboutMe
         {
             double correctVal = 1.25;
             WriteQuestionNumber();
-            Console.WriteLine("How far do I walk to get to CodeFellows each day, one way?");
+            Console.WriteLine("Many miles (to the nearest quarter-mile) do I walk to get to CodeFellows each day, one way?");
             string userInput = Console.ReadLine();
             double parsedInput = UserDouble(userInput);
             return (parsedInput == correctVal);
