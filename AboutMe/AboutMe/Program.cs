@@ -4,30 +4,37 @@ namespace AboutMe
 {
     class Program
     {
+        public static int correct = 0;
+        public static int incorrect = 0;
         static void Main(string[] args)
         {
-            int correct = 0;
-            int incorrect = 0;
             Console.WriteLine("Here's a quick quiz about me!");
-            if (SibNum(correct+incorrect))
+            updateCounters(SibNum(correct + incorrect));
+            Console.WriteLine("You got " + correct + " questions right and " + incorrect + " questions incorrect.");
+            Console.ReadLine();
+        }
+        static void updateCounters(bool questionResult)
+        {
+            if (questionResult)
             {
+                Console.WriteLine("That's correct!");
                 correct++;
             }
             else
             {
+                Console.WriteLine("That's incorrect, sorry.");
                 incorrect++;
             }
-            Console.WriteLine("You got " + correct + " questions right and " + incorrect + " questions incorrect.");
-            Console.ReadLine();
         }
 
         static bool SibNum(int questionNumber)
         {
+            int correctVal = 1;
             WriteQuestionNumber(questionNumber);
             Console.WriteLine("How many siblings do I have?");
             string userInput = Console.ReadLine();
             int parsedInput = UserInt(userInput);
-            return (parsedInput == 1);
+            return (parsedInput == correctVal);
         }
 
         static void WriteQuestionNumber(int questionNumber)
@@ -40,7 +47,7 @@ namespace AboutMe
             int parsedInt = 0;
             try
             {
-                parsedInt = Convert.ToInt32(parsedInt);
+                parsedInt = Convert.ToInt32(userInput);
             }
             catch(FormatException)
             {
