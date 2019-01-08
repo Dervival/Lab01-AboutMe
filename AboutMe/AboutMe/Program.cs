@@ -12,6 +12,7 @@ namespace AboutMe
             updateCounters(SibNum());
             updateCounters(BirthMonth());
             updateCounters(BirthState());
+            updateCounters(CurrentAge());
             updateCounters(QuestionsCorrect());
             Console.WriteLine("You got " + correct + " questions right and " + incorrect + " questions incorrect.");
             Console.ReadLine();
@@ -79,9 +80,42 @@ namespace AboutMe
             return (parsedInput == correct);
         }
 
+        static bool QuestionsIncorrect()
+        {
+            WriteQuestionNumber();
+            Console.WriteLine("How many questions have you answered incorrectly?");
+            string userInput = Console.ReadLine();
+            int parsedInput = UserInt(userInput);
+            return (parsedInput == incorrect);
+        }
+
+        static bool CurrentAge()
+        {
+            int correctVal = GetMyAgeInYears();
+            WriteQuestionNumber();
+            Console.WriteLine("How old am I (in years)?");
+            string userInput = Console.ReadLine();
+            int parsedInput = UserInt(userInput);
+            return (parsedInput == correctVal);
+        }
+
         static void WriteQuestionNumber()
         {
             Console.WriteLine("Question #" + (correct + incorrect + 1) + ": ");
+        }
+
+        static int GetMyAgeInYears()
+        {
+            if(DateTime.Today.Month > 3 || DateTime.Today.Month == 3 && DateTime.Today.Day >= 25)
+            {
+                //if today's month is later than March, or if today's month is March and the date is the 25th or later, I've had my birthday this year
+                return DateTime.Today.Year - 1993;
+            }
+            else
+            {
+                //else I have not had this year's birthday
+                return DateTime.Today.Year - 1993 - 1;
+            }
         }
 
         static string NormalizeString(string userInput)
