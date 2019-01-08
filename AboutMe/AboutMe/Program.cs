@@ -23,6 +23,8 @@ namespace AboutMe
             Console.WriteLine("You got " + correct + " question" + (UsePlural(correct) ? "s" : "") + " right and " + incorrect + " question" + (UsePlural(incorrect) ? "s" : "") + " incorrect.");
             Console.ReadLine();
         }
+
+        /*---------------Functions for updating global state------------------*/
         static void UpdateCounters(bool questionResult)
         {
             if (questionResult)
@@ -37,6 +39,8 @@ namespace AboutMe
             }
         }
 
+        /*---------------Functions for asking questions and receiving/evaluating input------------------*/
+
         //static bool GenericQuestion(int questionNumber)
         //{
         //    //type correctVal = (correct answer for this question)
@@ -46,16 +50,6 @@ namespace AboutMe
         //    //only if answer should be int: int parsedInput = UserInt(userInput);
         //    //return (parsedInput == correctVal);
         //}
-
-        //this is probably one of the most specific and least useful helper functions ever written
-        static bool UsePlural(int count)
-        {
-            if(count == 1 || count == -1)
-            {
-                return false;
-            }
-            return true;
-        }
 
         static bool SibNum()
         {
@@ -106,6 +100,7 @@ namespace AboutMe
             return (parsedInput == correctVal);
         }
 
+        /*---------------Functions for testing state of "global" variables------------------*/
         static bool QuestionsCorrect()
         {
             WriteQuestionNumber();
@@ -123,6 +118,17 @@ namespace AboutMe
             return (parsedInput == incorrect);
         }
 
+        /*---------------Helper Methods------------------*/
+        //this is probably one of the most specific and least useful helper functions ever written
+        static bool UsePlural(int count)
+        {
+            if (count == 1 || count == -1)
+            {
+                return false;
+            }
+            return true;
+        }
+
         static void WriteQuestionNumber()
         {
             try
@@ -136,7 +142,7 @@ namespace AboutMe
             }
             
         }
-
+        /*---------------Getter Methods------------------*/
         static int GetMyAgeInYears()
         {
             //using the Today property of the DateTime object from here https://docs.microsoft.com/en-us/dotnet/api/system.datetime.today?view=netframework-4.7.2
@@ -161,8 +167,10 @@ namespace AboutMe
             return 0;
         }
 
+        /*---------------Normalization/Parsing Methods------------------*/
         static string NormalizeString(string userInput)
         {
+            //for this normalization, I'm just removing whitespace padding to the left and right of the given string and converting it all to lower case
             try
             {
                 return userInput.Trim().ToLower();
@@ -176,12 +184,18 @@ namespace AboutMe
                 Console.WriteLine("Hit an unexpected exception in NormalizeString:");
                 Console.WriteLine(e.Message);
             }
+            finally
+            {
+                //No resources opened up in the try - no need to close them in the finally statement
+                //Console.WriteLine("User input for a string has been normalized.");
+            }
             //if all else fails, return the original input
             return userInput;
         }
 
         static int UserInt(string userInput)
         {
+            //if an exception is thrown, just return 0
             int parsedInt = 0;
             try
             {
@@ -189,18 +203,24 @@ namespace AboutMe
             }
             catch(FormatException)
             {
-                Console.WriteLine("Format exception thrown in UserInt - are you sure that string was convertable to an integer?");
+                Console.WriteLine("That input was not convertable to an integer - discarding it and replacing it with a default value of 0.");
             }
             catch(Exception e)
             {
                 Console.WriteLine("Hit an unexpected exception in UserInt:");
                 Console.WriteLine(e.Message);
             }
+            finally
+            {
+                //No resources opened up in the try - no need to close them in the finally statement
+                //Console.WriteLine("User input for an integer has been normalized.");
+            }
             return parsedInt;
         }
 
         static double UserDouble(string userInput)
         {
+            //if an exception is thrown, just return 0.0
             double parsedDouble = 0.0;
             try
             {
@@ -208,14 +228,20 @@ namespace AboutMe
             }
             catch (FormatException)
             {
-                Console.WriteLine("Format exception thrown in UserInt - are you sure that string was convertable to an integer?");
+                Console.WriteLine("That input was not convertable to a double - discarding it and replacing it with a default value of 0.0.");
             }
             catch (Exception e)
             {
                 Console.WriteLine("Hit an unexpected exception in UserInt:");
                 Console.WriteLine(e.Message);
             }
+            finally
+            {
+                //No resources opened up in the try - no need to close them in the finally statement
+                //Console.WriteLine("User input for a double has been normalized.");
+            }
             return parsedDouble;
         }
+
     }
 }
